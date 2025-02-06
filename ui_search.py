@@ -47,12 +47,15 @@ def test_FannieMae(page: Page):
 
 def test_AmericanRedCross(page: Page):
     page.goto("https://americanredcross.wd1.myworkdayjobs.com/American_Red_Cross_Careers")
+    page.wait_for_load_state("load")  # Wait until the page is fully loaded
     expect(page.locator(".css-1uwu54i")).to_contain_text("American Red Cross")
     page.locator("//button[@class='css-1iv5pxv']").get_by_text("Time Type").click()
     page.locator(".css-1ew7hmu").get_by_text("Full time").click()
     page.locator(".css-1iv5pxv").get_by_text("Remote Type").click()
-    page.locator(".css-1ew7hmu").get_by_text("Fully Remote - Eastern Time Zone schedule").click()
-    page.locator(".css-1ew7hmu").get_by_text("Fully Remote anywhere in the USA").click()
+    if page.locator(".css-1ew7hmu").get_by_text("Fully Remote - Eastern Time Zone schedule").is_visible():
+        page.locator(".css-1ew7hmu").get_by_text("Fully Remote - Eastern Time Zone schedule").click()
+    if page.locator(".css-1ew7hmu").get_by_text("Fully Remote anywhere in the USA").is_visible():
+        page.locator(".css-1ew7hmu").get_by_text("Fully Remote anywhere in the USA").click()
     page.locator(".css-1ew7hmu").get_by_text("Fully Remote Near Primary Location").click()
     page.locator(".css-wxxug7").click()
     print("")  # Just to see prettier output
@@ -86,6 +89,7 @@ def test_saic(page: Page):
 
 def test_CareFirst(page: Page):
     page.goto("https://carefirstcareers.ttcportals.com/jobs/search?q=SDET&per_page=15")
+    page.wait_for_load_state("load")  # Wait until the page is fully loaded
     assert "CareFirst - Careers" in page.title()
     print("_______________________________________________________")
     print("Care First")
@@ -104,10 +108,9 @@ def test_CareFirst(page: Page):
 def test_Discover(page: Page):
     page.goto("https://jobs.discover.com/job-search/?department=Information+Technology&page=0&location=&keyword=Quality+Engineer&remoteOnly=true")
     assert "Job search | Discover Careers" in page.title()
-    print (page.locator("//div[@id='job-search-results']/div").count())
-
+    print("_______________________________________________________")
+    print("Discover")
     page.wait_for_selector("//div[@id='job-search-results']/div", timeout=5000)
-
     for index in range(page.locator("//div[@id='job-search-results']/div").count()):
         row = page.locator("//div[@id='job-search-results']/div/h3").nth(index)
         if row.filter(has_text="Engineer (Quality)").count() > 0 :
